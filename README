@@ -1,16 +1,19 @@
 NEIGHBORHOOD MAP
 ================
 
-This is a map of my home town of Matthews, North Carolina. It's composed of two pieces, a server and a client.
+This is a map of my home town of Matthews, North Carolina. It's composed of two
+pieces, a server and a client.
 
-The server is very simple. Built in Express (which rests atop Node.js), it's primary function is to delegate
-Yelp API requests (and handle authentication via OAuth.) Beyond that, it serves static files from the public/
-folder and that's about it.
+The server is very simple. Built in Express (which rests atop Node.js), its
+primary function is to delegate Yelp API requests (and handle authentication
+via OAuth.) Beyond that, it serves static files from the public/ folder and
+that's about it.
 
-The client is built on Knockout.js and jQuery. It uses Google's Geolocation API to determine lat/long for the
-markers, and the Yelp API (via the server) for location details. By using our own server to delegate OAuth
-requests to Yelp, we avoid (a) having to distribute our Yelp API keys to the client and (b) dealing with
-cross-domain AJAX requests.
+The client is built on Knockout.js and jQuery. It uses Google's Geolocation API
+to determine lat/long for the markers, and the Yelp API (via the server) for
+location details. By using our own server to delegate OAuth requests to Yelp,
+we avoid (a) having to distribute our Yelp API keys to the client and (b)
+dealing with cross-domain AJAX requests.
 
 The client should work on most popular mobile devices as well as the desktop.
 
@@ -31,7 +34,7 @@ Then, edit the server config file to provide your Yelp API credentials:
 
     vim server.config.json
 
-You can get the required credentials from Yelp (required to access the API) here:
+You can get the required credentials from Yelp here:
 
     https://www.yelp.com/developers/manage_api_keys
 
@@ -48,7 +51,8 @@ Open your browser to:
 
     http://localhost:8080/
 
-Click on any of the markers to learn more about that location, courtesy of data from the Yelp API. To see a full
-list of locations, click (or tap) the hamburger menu on the top left. Type in the Search field to filter the list
-in real-time. Click a location in the menu to select it on the map. To close the menu, click/tap the hamburger menu
-or click/tap anywhere on the map.
+Click on any of the markers to learn more about that location, courtesy of
+data from the Yelp API. To see a full list of locations, click (or tap) the
+hamburger menu on the top left. Type in the Search field to filter the list
+in real-time. Click a location in the menu to select it on the map. To close
+the menu, click/tap the hamburger menu or click/tap anywhere on the map.
