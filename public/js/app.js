@@ -86,7 +86,7 @@ $(function() {
 			}
 		);
 
-		self.markers = ko.observableArray([]);
+		self.markers = ko.observableArray();
 
 		window.onload = function() {
 			self.locations().forEach(function(location, index, array) {
@@ -131,7 +131,7 @@ $(function() {
 					marker.title.toLowerCase().includes(newValue.toLowerCase()) ?
 						marker.setMap(map) :
 						marker.setMap(null);
-				})
+				});
 			});
 
 		/**
