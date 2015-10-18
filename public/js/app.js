@@ -86,14 +86,6 @@ $(function() {
 					.done(function(yelpData) {
 						// bounce the location's marker one time, then...
 						location.marker.setAnimation(google.maps.Animation.BOUNCE);
-						setTimeout(function () {
-							location.marker.setAnimation(null);
-
-							// center the map on the location
-							self.map.panTo(location.marker.position);
-
-							self.infoWindow.open(self.map, location.marker);
-						}, 750);
 
 						// update infoWindow with the data from Yelp
 						yelpData = JSON.parse(yelpData);
@@ -104,9 +96,19 @@ $(function() {
 							"<p>" + yelpData.location.display_address.join('<br>') + "</p>" +
 							"<p>" + yelpData.display_phone + "</p>"
 						);
+
+						// Wait 750ms (one bounce), then stop bouncing, pan to the marker and open the info window
+						setTimeout(function () {
+							location.marker.setAnimation(null);
+
+							// center the map on the location
+							self.map.panTo(location.marker.position);
+
+							self.infoWindow.open(self.map, location.marker);
+						}, 750);
 					})
 					.fail(function () {
-						alert("Error retrieving Yelp data. Please check README for Troubleshooting advice.");
+						alert("Error retrieving Yelp data. Please check README for troubleshooting advice.");
 					});
 			}
 		);
@@ -115,21 +117,28 @@ $(function() {
 
 		window.onload = function() {
 			self.locations().forEach(function(location, index, array) {
+
+				// convert address to lat/long
 				self.geocoder.geocode({ 'address': location.address }, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
 						location.position = results[0].geometry.location;
 
+						// use timer to stagger markers, so they don't all show at once
 						setTimeout(function() {
+
+							// create the marker and save it on the location for later use
 							location.marker = new google.maps.Marker({
 								animation: google.maps.Animation.DROP,
 								position: location.position,
 								map: self.map,
 								title: location.name
 							});
-							self.markers.push(location.marker);
+
 							google.maps.event.addListener(location.marker, 'click', function() {
 								self.selectedLocation(location);
 							});
+
+							self.markers.push(location.marker);
 						}, index * 250);
 					} else {
 						alert("Geocode was not successful: " + status);
@@ -140,6 +149,9 @@ $(function() {
 
 		self.query = ko.observable('');
 
+		/**
+		 * Add/remove each marker to/from map via case-insensitive title comparison
+		 */
 		self.query.subscribe(
 			function(newValue) {
 				self.markers().forEach(function(marker, index, array) {
@@ -149,6 +161,9 @@ $(function() {
 				})
 			});
 
+		/**
+		 * Filters the list of visible locations in the menu by case-insensitive title comparison
+		 */
 		self.visibleLocations = ko.computed(
 			function() {
 				return self.locations().filter(
