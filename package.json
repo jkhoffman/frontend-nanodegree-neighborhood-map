@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "express": "^4.13.3",
+    "jsonfile": "^2.2.2",
+    "yelp": "^0.2.0"
+  }
+}

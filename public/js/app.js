@@ -5,14 +5,17 @@ $(function() {
 		var self = this;
 
 		var mapOptions = {
-			center: { lat: 35.11596183, lng: -80.72239294 },
+			center: { lat: 35.1165518, lng: -80.7207504 },
+			mapTypeControlOptions: {
+				position: google.maps.ControlPosition.TOP_RIGHT
+			},
 			panControlOptions: {
 				position: google.maps.ControlPosition.LEFT_BOTTOM
 			},
 			zoomControlOptions: {
 				position: google.maps.ControlPosition.LEFT_BOTTOM
 			},
-			zoom: 17,
+			zoom: 18,
 			styles: [
 				{
 					featureType: "poi",
@@ -30,32 +33,44 @@ $(function() {
 
 		self.locations = ko.observableArray([
 			{
-				name: 'Matthews Elementary School',
-				address: '200 McDowell Avenue, Matthews, NC 28105'
-			},
-			{
-				name: 'Charlotte Mecklenburg Library - Matthews',
-				address: '230 Matthews Station St, Matthews, NC 28105'
-			},
-			{
 				name: 'Dilworth Coffee',
-				address: '110 Matthews Station St #1A, Matthews, NC 28105'
+				address: '110 Matthews Station St #1A, Matthews, NC 28105',
+				yelp_id: 'dilworth-coffeehouse-matthews-station-matthews'
+			},
+			{
+				name: 'Royal Cafe & Creperie',
+				address: '131 Matthews Station St, Ste E, Matthews, NC 28105',
+				yelp_id: 'royal-cafe-and-creperie-matthews'
+			},
+			{
+				name: 'Beantown Tavern',
+				address: '130 Matthews Station St, Matthews, NC 28105',
+				yelp_id: 'beantown-tavern-matthews'
 			},
 			{
 				name: 'Kristophers Bar & Restaurant',
-				address: 'Depot Shopping Center, 250 N Trade St, Matthews, NC 28105'
+				address: 'Depot Shopping Center, 250 N Trade St, Matthews, NC 28105',
+				yelp_id: 'kristophers-bar-and-restaurant-matthews'
 			},
 			{
-				name: 'Moe\'s Original Bar B Que',
-				address: '111 Matthews Station St, Matthews, NC 28105'
+				name: 'Moe\'s Original Bar-B-Que',
+				address: '111 Matthews Station St, Matthews, NC 28105',
+				yelp_id: 'moes-original-bar-b-que-matthews'
 			},
 			{
 				name: 'Matthews Community Farmers\' Market',
-				address: '188 N Trade St, Matthews, NC 28105'
+				address: '188 N Trade St, Matthews, NC 28105',
+				yelp_id: 'matthews-community-farmers-market-matthews'
 			},
 			{
-				name: 'US Post Office',
-				address: '301 E John St, Matthews, NC 28105'
+				name: 'Santé',
+				address: '165 N Trade St, Matthews, NC 28105',
+				yelp_id: 'sante-matthews'
+			},
+			{
+				name: 'Taco & Tequila Cantina Grill',
+				address: '131 E John St, Matthews, NC 28105',
+				yelp_id: 'tacos-and-tequila-cantina-grill-matthews'
 			}
 		]);
 
@@ -66,42 +81,33 @@ $(function() {
 		};
 
 		self.selectedLocation.subscribe(
-			function(newValue) {
-				var oauth = OAuth({
-					consumer: {
-						public: 'URxwLlsZPPy6lguir-kjuA',
-						secret: 'qIUKWV3Xp9V4mDIxYVOAjitm2zk'
-					},
-				    signature_method: 'HMAC-SHA1'
-				});
+			function(location) {
+				$.get("http://localhost:8080/business", { id: location.yelp_id })
+					.done(function(yelpData) {
+						// bounce the location's marker one time, then...
+						location.marker.setAnimation(google.maps.Animation.BOUNCE);
+						setTimeout(function () {
+							location.marker.setAnimation(null);
 
-				var request_data = {
-					url: 'http://api.yelp.com/v2/search',
-					method: 'POST',
-					data: {
-						term: 'test'
-					}
-				};
+							// center the map on the location
+							self.map.panTo(location.marker.position);
 
-				var token = {
-					public: 'pXHwjZaEe44cbyN7bvoAj40aPN7MBrF7',
-					secret: 'aX-1lzgLhGzwwI8bqyIYfIVDbgY'
-				};
+							self.infoWindow.open(self.map, location.marker);
+						}, 750);
 
-				$.ajax({
-					url: request_data.url,
-					type: request_data.method,
-					data: oauth.authorize(request_data, token)
-				}).done(function(data) {
-					console.dir(data);
-				});
-
-				self.infoWindow.setContent(
-					"<h3>" + newValue.name + "</h3>" +
-					"<p>" + newValue.address + "</p>"
-				);
-				self.infoWindow.open(self.map, newValue.marker);
-				self.map.panTo(newValue.marker.position);
+						// update infoWindow with the data from Yelp
+						yelpData = JSON.parse(yelpData);
+						self.infoWindow.close();
+						self.infoWindow.setContent(
+							"<h3>" + yelpData.name + " <img src=\"" + yelpData.rating_img_url_small + "\"></h3>" +
+							"<p>\"" + yelpData.snippet_text + "\"</p>" +
+							"<p>" + yelpData.location.display_address.join('<br>') + "</p>" +
+							"<p>" + yelpData.display_phone + "</p>"
+						);
+					})
+					.fail(function () {
+						alert("Error retrieving Yelp data. Please check README for Troubleshooting advice.");
+					});
 			}
 		);
 
@@ -124,9 +130,9 @@ $(function() {
 							google.maps.event.addListener(location.marker, 'click', function() {
 								self.selectedLocation(location);
 							});
-						}, index * 200);
+						}, index * 250);
 					} else {
-						alert("Geocode was not successful for the following reason: " + status);
+						alert("Geocode was not successful: " + status);
 					}
 				});
 			});

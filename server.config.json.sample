@@ -1,0 +1,9 @@
+{
+  "port": 8080,
+  "yelp": {
+    "consumer_key": "",
+    "consumer_secret": "",
+    "token": "",
+    "token_secret": ""
+  }
+}
