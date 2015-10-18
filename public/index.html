@@ -2,13 +2,18 @@
 <html lang="en">
     <head>
         <title>Matthews, NC | Neighborhood Map</title>
-        <link href="css/jquery.mmenu.all.css" type="text/css" rel="stylesheet" />
-        <link href="css/jquery.mmenu.widescreen.css" type="text/css" rel="stylesheet" media="all and (min-width: 1430px)" />
+        <link href="css/jquery.mmenu.all.css" rel="stylesheet" />
+        <link href="css/jquery.mmenu.widescreen.css" rel="stylesheet" media="all and (min-width: 1430px)" />
         <style>
             body { font-family: Arial, sans-serif; }
-            html, body, #page, #map-canvas { height: 100%; margin: 0; padding: 0; }
+            html,
+            body,
+            #page,
+            #map-canvas { height: 100%; margin: 0; padding: 0; }
             #hamburger { box-sizing: border-box; display: block; width: 70px; height: 45px; position: fixed; top: 10px; left: 0; z-index: 4; }
-            #hamburger:before, #hamburger:after, #hamburger span { background: #fff; border: 1px solid #aaa; content: ''; display: block; width: 30px; height: 5px; position: absolute; left: 30px; }
+            #hamburger:before,
+            #hamburger:after,
+            #hamburger span { background: #fff; border: 1px solid #aaa; content: ''; display: block; width: 30px; height: 5px; position: absolute; left: 30px; }
             #hamburger:before { top: 10px; }
             #hamburger span { top: 20px; }
             #hamburger:after { top: 30px; }
@@ -27,7 +32,7 @@
         <script src="js/knockout-3.3.0.js"></script>
         <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
         <script src="js/jquery.mmenu.min.all.js" type="text/javascript"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXH3b-tasYnj1R0ahdAC4vLFRGMmqUiUc"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXH3b-tasYnj1R0ahdAC4vLFRGMmqUiUc&callback=initMap" async defer></script>
         <script src="js/app.js"></script>
     </body>
 </html>

@@ -4,33 +4,6 @@ $(function() {
 	var MapViewModel = function() {
 		var self = this;
 
-		var mapOptions = {
-			center: { lat: 35.1165518, lng: -80.7207504 },
-			mapTypeControlOptions: {
-				position: google.maps.ControlPosition.TOP_RIGHT
-			},
-			panControlOptions: {
-				position: google.maps.ControlPosition.LEFT_BOTTOM
-			},
-			zoomControlOptions: {
-				position: google.maps.ControlPosition.LEFT_BOTTOM
-			},
-			zoom: 18,
-			styles: [
-				{
-					featureType: "poi",
-					elementType: "labels",
-					stylers: [
-						{ visibility: "off" }
-					]
-				}
-			]
-		};
-
-		self.map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-		self.geocoder = new google.maps.Geocoder();
-
 		self.locations = ko.observableArray([
 			{
 				name: 'Dilworth Coffee',
@@ -89,8 +62,8 @@ $(function() {
 
 						// update infoWindow with the data from Yelp
 						yelpData = JSON.parse(yelpData);
-						self.infoWindow.close();
-						self.infoWindow.setContent(
+						infoWindow.close();
+						infoWindow.setContent(
 							"<h3>" + yelpData.name + " <img src=\"" + yelpData.rating_img_url_small + "\"></h3>" +
 							"<p>\"" + yelpData.snippet_text + "\"</p>" +
 							"<p>" + yelpData.location.display_address.join('<br>') + "</p>" +
@@ -102,9 +75,9 @@ $(function() {
 							location.marker.setAnimation(null);
 
 							// center the map on the location
-							self.map.panTo(location.marker.position);
+							map.panTo(location.marker.position);
 
-							self.infoWindow.open(self.map, location.marker);
+							infoWindow.open(map, location.marker);
 						}, 750);
 					})
 					.fail(function () {
@@ -119,7 +92,7 @@ $(function() {
 			self.locations().forEach(function(location, index, array) {
 
 				// convert address to lat/long
-				self.geocoder.geocode({ 'address': location.address }, function(results, status) {
+				geocoder.geocode({ 'address': location.address }, function(results, status) {
 					if (status == google.maps.GeocoderStatus.OK) {
 						location.position = results[0].geometry.location;
 
@@ -130,7 +103,7 @@ $(function() {
 							location.marker = new google.maps.Marker({
 								animation: google.maps.Animation.DROP,
 								position: location.position,
-								map: self.map,
+								map: map,
 								title: location.name
 							});
 
@@ -156,7 +129,7 @@ $(function() {
 			function(newValue) {
 				self.markers().forEach(function(marker, index, array) {
 					marker.title.toLowerCase().includes(newValue.toLowerCase()) ?
-						marker.setMap(self.map) :
+						marker.setMap(map) :
 						marker.setMap(null);
 				})
 			});
@@ -175,7 +148,6 @@ $(function() {
 				);
 			}, this);
 
-		self.infoWindow = new google.maps.InfoWindow();
 	};
 
 	$("#menu").mmenu({
@@ -194,3 +166,43 @@ $(function() {
 
 	ko.applyBindings(new MapViewModel());
 });
+
+var map;
+var geocoder;
+var infoWindow;
+
+/**
+ * Since Google Maps is loaded asynchronously, we have to wait for it to finish loading before setting things up.
+ * This callback, specified as the 'callback' parameter in index.html, is called by Google Maps when it's ready.
+ */
+function initMap() {
+	var mapOptions = {
+		center: { lat: 35.1165518, lng: -80.7207504 },
+		mapTypeControlOptions: {
+			position: google.maps.ControlPosition.TOP_RIGHT
+		},
+		panControlOptions: {
+			position: google.maps.ControlPosition.LEFT_BOTTOM
+		},
+		zoomControlOptions: {
+			position: google.maps.ControlPosition.LEFT_BOTTOM
+		},
+		zoom: 18,
+		styles: [
+			{
+				featureType: "poi",
+				elementType: "labels",
+				stylers: [
+					{ visibility: "off" }
+				]
+			}
+		]
+	};
+
+	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+	geocoder = new google.maps.Geocoder();
+
+	infoWindow = new google.maps.InfoWindow();
+}
+
