@@ -5,25 +5,55 @@
         <link href="css/jquery.mmenu.all.css" rel="stylesheet" />
         <link href="css/jquery.mmenu.widescreen.css" rel="stylesheet" media="all and (min-width: 1430px)" />
         <style>
-            body { font-family: Arial, sans-serif; }
+            body {
+                font-family: Arial, sans-serif;
+            }
             html,
             body,
-            #page,
-            #map-canvas { height: 100%; margin: 0; padding: 0; }
-            #hamburger { box-sizing: border-box; display: block; width: 70px; height: 45px; position: fixed; top: 10px; left: 0; z-index: 4; }
-            #hamburger:before,
-            #hamburger:after,
-            #hamburger span { background: #fff; border: 1px solid #aaa; content: ''; display: block; width: 30px; height: 5px; position: absolute; left: 30px; }
-            #hamburger:before { top: 10px; }
-            #hamburger span { top: 20px; }
-            #hamburger:after { top: 30px; }
+            .page,
+            .map-canvas {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .hamburger {
+                box-sizing: border-box;
+                display: block;
+                width: 70px;
+                height: 45px;
+                position: fixed;
+                top: 10px;
+                left: 0;
+                z-index: 4;
+            }
+            .hamburger:before,
+            .hamburger:after,
+            .hamburger span {
+                background: #fff;
+                border: 1px solid #aaa;
+                content: '';
+                display: block;
+                width: 30px;
+                height: 5px;
+                position: absolute;
+                left: 30px;
+            }
+            .hamburger:before {
+                top: 10px;
+            }
+            .hamburger span {
+                top: 20px;
+            }
+            .hamburger:after {
+                top: 30px;
+            }
         </style>
     </head>
     <body>
-        <div id="page">
-            <div id="map-canvas"></div>
+        <div class="page">
+            <div id="map-canvas" class="map-canvas"></div>
         </div>
-        <a id="hamburger" class="mm-slideout" href="#menu"><span></span></a>
+        <a class="hamburger mm-slideout" href="#menu"><span></span></a>
         <nav id="menu">
             <ul id="locations-list" data-bind="foreach: visibleLocations">
                 <li class="location"><a href="#" data-bind="text: name, click: $parent.selectLocation"></a></li>

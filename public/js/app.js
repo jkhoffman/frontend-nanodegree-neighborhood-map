@@ -55,7 +55,7 @@ $(function() {
 
 		self.selectedLocation.subscribe(
 			function(location) {
-				$.get("http://localhost:8080/business", { id: location.yelp_id })
+				$.get("http://localhost:8080/business/" + location.yelp_id)
 					.done(function(yelpData) {
 						// bounce the location's marker one time, then...
 						location.marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -173,7 +173,7 @@ var infoWindow;
 
 /**
  * Since Google Maps is loaded asynchronously, we have to wait for it to finish loading before setting things up.
- * This callback, specified as the 'callback' parameter in index.html, is called by Google Maps when it's ready.
+ * This callback is invoked by Google Maps when it's ready.
  */
 function initMap() {
 	var mapOptions = {

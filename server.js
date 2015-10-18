@@ -30,18 +30,11 @@ jsonfile.readFile(__dirname + '/server.config.json', function(err, config) {
 app.use(express.static(__dirname + '/public'));
 
 // Listen for GET requests on /business
-app.get('/business', function (req, res) {
-
-	// Check for "id" parameter, ?id=
-	if (!"id" in req.query) {
-		res.send('Error: "id" parameter required.');
-		return;
-	}
-
-	console.log("Requesting Yelp data for id: " + req.query.id);
+app.get('/business/:id', function (req, res) {
+	console.log("Requesting Yelp data for id: " + req.params.id);
 
 	// Get data from Yelp's API about the requested business
-	yelp.business(req.query.id, function (err, data) {
+	yelp.business(req.params.id, function (err, data) {
 		if (err) {
 			res.send(err.data);
 			return;
